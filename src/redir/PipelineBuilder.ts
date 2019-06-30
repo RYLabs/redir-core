@@ -1,6 +1,7 @@
 import Pipeline, { Stage } from "./Pipeline";
 import Script from "./Script";
 import ProcessUnit from "./ProcessUnit";
+import ResultTarget from "./ResultTarget";
 
 class StageBuilder {
   pipeline: PipelineBuilder;
@@ -15,15 +16,17 @@ class StageBuilder {
     return new Stage(this.processes);
   }
 
-  async addScript(script: Script) {
-    this.processes.push(new ProcessUnit(script));
+  async addScript(script: Script, resultTarget?: ResultTarget) {
+    this.processes.push(new ProcessUnit(script, resultTarget));
 
     if (script.prerequisites) {
       if (!this.beforeStage) {
         this.beforeStage = new StageBuilder(this.pipeline);
       }
       const promises = script.prerequisites.map(req =>
-        req.loadScript().then(script => this.beforeStage && this.beforeStage.addScript(script)),
+        req.scriptRef
+          .loadScript()
+          .then(script => this.beforeStage && this.beforeStage.addScript(script, req.resultTarget)),
       );
       await Promise.all(promises);
     }
@@ -43,7 +46,7 @@ export default class PipelineBuilder {
     stages.unshift(curStage.build());
     while (curStage.beforeStage) {
       curStage = curStage.beforeStage;
-      stages.unshift(curStage.build())
+      stages.unshift(curStage.build());
     }
     return new Pipeline(stages);
   }

@@ -12,28 +12,18 @@ export class Stage implements Redir {
     const promises = this.processes.map(proc => proc.run(input, context));
     const results = await Promise.all(promises);
 
-    const newInput = {},
-      newContext = {};
+    const combinedOutput: { [key: string]: Output } = {},
+      newContext: { [key: string]: any } = {};
 
     for (let i = 0, len = this.processes.length; i < len; i++) {
       const proc = this.processes[i];
-
-      if (proc.shouldStoreInContext) {
-        //debug(
-        //  `Storing results of ${
-        //    task.name
-        //  } in context as ${task.resultContextName}`
-        //);
-        proc.storeInContext(results[i], newContext);
-      } else {
-        proc.storeInContext(results[i], newInput);
-      }
+      proc.resultTarget.store(results[i], combinedOutput, newContext);
     }
 
     Object.assign(context, newContext);
 
-    const inputKeys = Object.keys(newInput);
-    return inputKeys.length === 1 ? newInput[inputKeys[0]] : newInput;
+    const keys = Object.keys(combinedOutput);
+    return keys.length === 1 ? combinedOutput[keys[0]] : combinedOutput;
   }
 }
 
