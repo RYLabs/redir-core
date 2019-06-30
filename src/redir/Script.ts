@@ -1,11 +1,12 @@
 import PipelineBuilder from "./PipelineBuilder";
 import Pipeline from "./Pipeline";
-import { Redir, Input, Output } from "./types";
+import { Input, Output } from "./types";
 import Prerequisite from "./Prerequisite";
+import { Redir } from "./Redir";
 
 export type ScriptOptions = { [key: string]: any };
 
-export default class Script implements Redir {
+export default class Script {
   name: string;
   prerequisites: Prerequisite[];
   scriptContent: string;
@@ -18,13 +19,9 @@ export default class Script implements Redir {
     this.options = options;
   }
 
-  createPipeline(): Pipeline {
-    const builder = new PipelineBuilder();
+  createPipeline(redir: Redir): Pipeline {
+    const builder = new PipelineBuilder(redir);
     builder.currentStage().addScript(this);
     return builder.build();
-  }
-
-  run(input: Promise<Input>, context: any): Promise<Output> {
-    return this.createPipeline().run(input, context);
   }
 }

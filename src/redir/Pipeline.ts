@@ -1,7 +1,7 @@
 import ProcessUnit from "./ProcessUnit";
-import { Redir, Output, Input } from "./types";
+import { RedirFunction, Output, Input } from "./types";
 
-export class Stage implements Redir {
+export class Stage implements RedirFunction {
   processes: ProcessUnit[];
 
   constructor(processes: ProcessUnit[]) {
@@ -27,7 +27,7 @@ export class Stage implements Redir {
   }
 }
 
-export default class Pipeline implements Redir {
+export default class Pipeline implements RedirFunction {
   stages: Stage[];
 
   constructor(stages: Stage[]) {
