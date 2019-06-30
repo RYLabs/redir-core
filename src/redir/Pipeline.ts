@@ -1,50 +1,72 @@
-import ProcessUnit from "./ProcessUnit";
-import { Redir, Output, Input } from "./types";
+import { ProcessUnit } from "./ProcessUnit";
+import { RedirFunction, Output, Input } from "./types";
+import { ObjectOutput, StringIO } from "./io";
 
-export class Stage implements Redir {
+export class Stage implements RedirFunction {
   processes: ProcessUnit[];
 
   constructor(processes: ProcessUnit[]) {
     this.processes = processes;
   }
 
+  toString(): string {
+    if (this.processes.length) {
+      return this.processes.map(proc => proc.name).join(",");
+    } else {
+      return "<empty>";
+    }
+  }
+
   async run(input: Promise<Input>, context: any): Promise<Output> {
     const promises = this.processes.map(proc => proc.run(input, context));
     const results = await Promise.all(promises);
 
-    const newInput = {},
-      newContext = {};
+    const combinedOutput: { [key: string]: Output } = {},
+      newContext: { [key: string]: any } = {};
 
     for (let i = 0, len = this.processes.length; i < len; i++) {
       const proc = this.processes[i];
-
-      if (proc.shouldStoreInContext) {
-        //debug(
-        //  `Storing results of ${
-        //    task.name
-        //  } in context as ${task.resultContextName}`
-        //);
-        proc.storeInContext(results[i], newContext);
-      } else {
-        proc.storeInContext(results[i], newInput);
-      }
+      proc.resultTarget.store(results[i], combinedOutput, newContext);
     }
 
-    Object.assign(context, newContext);
+    if (Object.keys(newContext).length) {
+      Object.assign(context, newContext);
+    }
 
-    const inputKeys = Object.keys(newInput);
-    return inputKeys.length === 1 ? newInput[inputKeys[0]] : newInput;
+    const keys = Object.keys(combinedOutput);
+    return keys.length === 1 ? Promise.resolve(combinedOutput[keys[0]]) : new ObjectOutput(combinedOutput);
   }
 }
 
-export default class Pipeline implements Redir {
+export class Pipeline implements RedirFunction {
   stages: Stage[];
 
   constructor(stages: Stage[]) {
     this.stages = stages;
   }
 
-  async run(input: Promise<Input>, context: any): Promise<Output> {
-    return await this.stages.reduce(async (val, stage) => await stage.run(val, context), input);
+  toString(): string {
+    return this.stages.map(stage => stage.toString()).join(" => ");
+  }
+
+  run(input: Promise<Input>, context: any): Promise<Output> {
+    const curStages = this.stages.slice();
+    const stage = curStages.shift();
+    if (stage) {
+      return this.runStage(stage, curStages, input, context);
+    } else {
+      return new StringIO(input.toString()).promise();
+    }
+  }
+
+  runStage(stage: Stage, remainingStages: Stage[], input: Promise<Input>, context: any): Promise<Output> {
+    return stage.run(input, context).then(output => {
+      const nextStage = remainingStages.shift();
+      if (nextStage) {
+        return this.runStage(nextStage, remainingStages, output.toInput(), context);
+      } else {
+        return output;
+      }
+    });
   }
 }

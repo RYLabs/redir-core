@@ -1,10 +1,21 @@
 import { homedir } from "os";
 import * as fs from "fs";
 import * as path from "path";
-import ScriptRef, { FileScriptRef } from "./ScriptRef";
-import ScriptResolver from "./ScriptResolver";
+import { ScriptRef, FileScriptRef } from "./ScriptRef";
+import { ScriptResolver } from "./ScriptResolver";
 
-export default class LocalFilesystemScriptResolver implements ScriptResolver {
+export class LocalFilesystemScriptResolver implements ScriptResolver {
+  scriptsDir: string;
+
+  constructor(scriptsDir: string) {
+    this.scriptsDir = scriptsDir;
+  }
+
+  static defaultResolver(): LocalFilesystemScriptResolver {
+    const dir = path.join(homedir(), ".redir", "scripts", "local");
+    return new LocalFilesystemScriptResolver(dir);
+  }
+
   async resolve(name: string): Promise<ScriptRef> {
     const fn = this.getScriptFile(name);
     try {
@@ -24,11 +35,7 @@ export default class LocalFilesystemScriptResolver implements ScriptResolver {
     });
   }
 
-  localScriptsDir(): string {
-    return path.join(homedir(), ".redir", "scripts", "local");
-  }
-
   getScriptFile(name: string): string {
-    return path.join(this.localScriptsDir(), `${name}.js`);
+    return path.join(this.scriptsDir, `${name}.js`);
   }
 }

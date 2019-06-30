@@ -33,6 +33,8 @@
   ],
   "dependencies": {
     "@types/lodash": "^4.14.135",
-    "gray-matter": "^4.0.2"
+    "@types/node-fetch": "^2.3.7",
+    "gray-matter": "^4.0.2",
+    "netrc": "^0.1.4"
   }
 }

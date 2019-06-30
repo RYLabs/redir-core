@@ -1,6 +1,6 @@
-import ScriptRef from "./ScriptRef";
+import { ScriptRef } from "./ScriptRef";
 
-export default interface ScriptResolver {
+export interface ScriptResolver {
   resolve(name: string): Promise<ScriptRef>;
 }
 
