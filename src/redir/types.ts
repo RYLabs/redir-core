@@ -9,5 +9,12 @@ export interface Output extends Data {
 }
 
 export interface RedirFunction {
-  run(input: Promise<Input>, context: any): Promise<Output>;
+  run(input: Promise<Input>, context: Context): Promise<Output>;
+}
+
+export interface UserAgent {}
+
+export interface Context {
+  [key: string]: any;
+  userAgent?: UserAgent;
 }

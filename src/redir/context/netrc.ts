@@ -3,8 +3,9 @@
 import { ScriptOptions } from "../Script";
 import { flatten } from "lodash";
 import * as netrc from "netrc";
+import { Context } from "../types";
 
-export default (context: any, options: ScriptOptions) => {
+export default (context: Context, options: ScriptOptions) => {
   if ("netrc" in options) {
     const logins = flatten([options.netrc]),
       myNetrc = netrc();

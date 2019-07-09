@@ -1,6 +1,7 @@
 import { ProcessUnit } from "./ProcessUnit";
-import { RedirFunction, Output, Input } from "./types";
+import { RedirFunction, Output, Input, Context } from "./types";
 import { ObjectOutput, StringIO } from "./io";
+import { DefaultContext } from "./DefaultContext";
 
 export class Stage implements RedirFunction {
   processes: ProcessUnit[];
@@ -17,12 +18,12 @@ export class Stage implements RedirFunction {
     }
   }
 
-  async run(input: Promise<Input>, context: any): Promise<Output> {
+  async run(input: Promise<Input>, context: Context): Promise<Output> {
     const promises = this.processes.map(proc => proc.run(input, context));
     const results = await Promise.all(promises);
 
     const combinedOutput: { [key: string]: Output } = {},
-      newContext: { [key: string]: any } = {};
+      newContext: Context = new DefaultContext(context.userAgent)
 
     for (let i = 0, len = this.processes.length; i < len; i++) {
       const proc = this.processes[i];
@@ -49,7 +50,7 @@ export class Pipeline implements RedirFunction {
     return this.stages.map(stage => stage.toString()).join(" => ");
   }
 
-  run(input: Promise<Input>, context: any): Promise<Output> {
+  run(input: Promise<Input>, context: Context): Promise<Output> {
     const curStages = this.stages.slice();
     const stage = curStages.shift();
     if (stage) {
@@ -59,7 +60,7 @@ export class Pipeline implements RedirFunction {
     }
   }
 
-  runStage(stage: Stage, remainingStages: Stage[], input: Promise<Input>, context: any): Promise<Output> {
+  runStage(stage: Stage, remainingStages: Stage[], input: Promise<Input>, context: Context): Promise<Output> {
     return stage.run(input, context).then(output => {
       const nextStage = remainingStages.shift();
       if (nextStage) {

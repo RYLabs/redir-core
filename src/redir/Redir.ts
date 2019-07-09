@@ -1,11 +1,12 @@
 import { Script, ScriptOptions } from "./Script";
-import { Output, Input } from "./types";
+import { Output, Input, Context } from "./types";
 import { ScriptResolver } from "./ScriptResolver";
 import { LocalFilesystemScriptResolver } from "./LocalFilesystemScriptResolver";
 import { emptyInput } from "./inputs";
+import { DefaultContext } from "./DefaultContext";
 
-export type ContextProcessor = (context: any, options: ScriptOptions) => void;
-export type ResultProcessor = (result: Promise<Output>, context: any, options: ScriptOptions) => Promise<Output>;
+export type ContextProcessor = (context: Context, options: ScriptOptions) => void;
+export type ResultProcessor = (result: Promise<Output>, context: Context, options: ScriptOptions) => Promise<Output>;
 
 export class Redir {
   contextProcessors: ContextProcessor[] = [];
@@ -13,7 +14,7 @@ export class Redir {
   scriptResolver: ScriptResolver = LocalFilesystemScriptResolver.defaultResolver();
 
   runScript(script: Script, input?: Promise<Input>): Promise<Output> {
-    const context = {};
+    const context = new DefaultContext();
     return script.createPipeline(this).then(pipeline => pipeline.run(input || emptyInput.promise(), context));
   }
 

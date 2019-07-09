@@ -1,12 +1,11 @@
 import * as vm from "vm";
 import { Script, ScriptOptions, ResultTarget } from "./Script";
-import { RedirFunction, Output, Input } from "./types";
-import { Redir } from "./Redir";
-import { emptyOutput, StringIO, ObjectOutput } from "./io";
+import { RedirFunction, Output, Input, Context } from "./types";
+import { Redir, ResultProcessor } from "./Redir";
+import { StringIO, ObjectOutput } from "./io";
 
 export class ProcessUnit implements RedirFunction {
   name: string;
-  vmPromise?: Promise<any>;
   scriptContent: string;
   options: ScriptOptions;
   resultTarget: ResultTarget;
@@ -20,12 +19,12 @@ export class ProcessUnit implements RedirFunction {
     this.resultTarget = resultTarget || new ResultTarget(script.name);
   }
 
-  run(input: Promise<Input>, context: any): Promise<Output> {
+  run(input: Promise<Input>, context: Context): Promise<Output> {
     let promise = this.runScriptInVM(input, context);
     return this.redir.resultProcessors.reduce((val, proc) => proc(val, context, this.options), promise);
   }
 
-  async runScriptInVM(input: Promise<Input>, context: any): Promise<Output> {
+  async runScriptInVM(input: Promise<Input>, context: Context): Promise<Output> {
     // debug("creating vm...");
     const [vm, inputVal] = await Promise.all([this.createVM(context), input]);
 
@@ -43,7 +42,7 @@ export class ProcessUnit implements RedirFunction {
     }
   }
 
-  createVM(context: any): vm.Context {
+  createVM(context: Context): vm.Context {
     const sandbox = { ...context };
     this.redir.contextProcessors.forEach(proc => proc(sandbox, this.options));
 

@@ -1,6 +1,6 @@
 import { PipelineBuilder } from "./PipelineBuilder";
 import { Pipeline } from "./Pipeline";
-import { Input, Output } from "./types";
+import { Input, Output, Context } from "./types";
 import { Redir } from "./Redir";
 import { ScriptRef } from "./ScriptRef";
 
@@ -30,7 +30,7 @@ export class ResultTarget {
     this.type = type || ResultTargetType.Output;
   }
 
-  store(result: Output, output: any, context: any) {
+  store(result: Output, output: any, context: Context) {
     if (this.type == ResultTargetType.Context) {
       //debug(
       //  `Storing results of ${
