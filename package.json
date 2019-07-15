@@ -1,6 +1,6 @@
 {
   "name": "redir-core",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.js",
@@ -32,7 +32,7 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "@types/lodash": "^4.14.135",
+    "@types/lodash": "^4.14.134",
     "@types/node-fetch": "^2.3.7",
     "gray-matter": "^4.0.2",
     "netrc": "^0.1.4"
