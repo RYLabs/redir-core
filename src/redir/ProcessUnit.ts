@@ -1,13 +1,14 @@
 import * as vm from "vm";
 import { Script, ScriptOptions, ResultTarget } from "./Script";
-import { RedirFunction, Output, Input, Context } from "./types";
-import { Redir, ResultProcessor } from "./Redir";
+import { RedirFunction, Output, Input, Context, Runnable } from "./types";
+import { Redir } from "./Redir";
 import { StringIO, ObjectOutput } from "./io";
 
-export class ProcessUnit implements RedirFunction {
+export class ProcessUnit implements Runnable {
   name: string;
   scriptContent: string;
   options: ScriptOptions;
+  resultProcessor?: RedirFunction;
   resultTarget: ResultTarget;
   redir: Redir;
 
@@ -20,8 +21,13 @@ export class ProcessUnit implements RedirFunction {
   }
 
   run(input: Promise<Input>, context: Context): Promise<Output> {
-    let promise = this.runScriptInVM(input, context);
-    return this.redir.resultProcessors.reduce((val, proc) => proc(val, context, this.options), promise);
+    let promise = this.runScriptInVM(input, context),
+      proc = this.resultProcessor;
+    if (proc) {
+      return promise.then(output => proc!(output.toInput(), context));
+    } else {
+      return promise;
+    }
   }
 
   async runScriptInVM(input: Promise<Input>, context: Context): Promise<Output> {

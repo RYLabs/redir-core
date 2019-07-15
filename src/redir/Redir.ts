@@ -1,16 +1,15 @@
 import { Script, ScriptOptions } from "./Script";
-import { Output, Input, Context } from "./types";
+import { Output, Input, Context, RedirFunction } from "./types";
 import { ScriptResolver } from "./ScriptResolver";
 import { LocalFilesystemScriptResolver } from "./LocalFilesystemScriptResolver";
 import { emptyInput } from "./inputs";
 import { DefaultContext } from "./DefaultContext";
 
 export type ContextProcessor = (context: Context, options: ScriptOptions) => void;
-export type ResultProcessor = (result: Promise<Output>, context: Context, options: ScriptOptions) => Promise<Output>;
 
 export class Redir {
   contextProcessors: ContextProcessor[] = [];
-  resultProcessors: ResultProcessor[] = [];
+  resultProcessor?: RedirFunction;
   scriptResolver: ScriptResolver = LocalFilesystemScriptResolver.defaultResolver();
 
   runScript(script: Script, input?: Promise<Input>): Promise<Output> {

@@ -1,9 +1,9 @@
 import { ProcessUnit } from "./ProcessUnit";
-import { RedirFunction, Output, Input, Context } from "./types";
+import { Output, Input, Context, Runnable } from "./types";
 import { ObjectOutput, StringIO } from "./io";
 import { DefaultContext } from "./DefaultContext";
 
-export class Stage implements RedirFunction {
+export class Stage implements Runnable {
   processes: ProcessUnit[];
 
   constructor(processes: ProcessUnit[]) {
@@ -23,7 +23,7 @@ export class Stage implements RedirFunction {
     const results = await Promise.all(promises);
 
     const combinedOutput: { [key: string]: Output } = {},
-      newContext: Context = new DefaultContext(context.userAgent)
+      newContext: Context = new DefaultContext(context.userAgent);
 
     for (let i = 0, len = this.processes.length; i < len; i++) {
       const proc = this.processes[i];
@@ -39,7 +39,7 @@ export class Stage implements RedirFunction {
   }
 }
 
-export class Pipeline implements RedirFunction {
+export class Pipeline implements Runnable {
   stages: Stage[];
 
   constructor(stages: Stage[]) {
