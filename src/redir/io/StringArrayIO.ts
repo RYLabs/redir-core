@@ -1,4 +1,4 @@
-import { Input, Output } from '../types';
+import { Input, Output } from "../types";
 
 export class StringArrayIO implements Output, Input {
   private value: string[];

@@ -1,7 +1,7 @@
-import fetch from '../util/fetch';
-import { Context, Output } from '../types';
-import { ScriptOptions } from '../Script';
-import { StringArrayIO, StringIO } from '../io';
+import fetch from "../util/fetch";
+import { Context, Output } from "../types";
+import { ScriptOptions } from "../Script";
+import { StringArrayIO, StringIO } from "../io";
 
 export default (result: Promise<Output>, context: Context, options: ScriptOptions): Promise<Output> => {
   if (options.fetch === true) {

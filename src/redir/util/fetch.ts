@@ -1,7 +1,9 @@
-import _fetch from 'node-fetch';
-import * as querystring from 'querystring';
+import _fetch from "node-fetch";
+import * as querystring from "querystring";
 
-interface Request { [key: string]: any };
+interface Request {
+  [key: string]: any;
+}
 
 export interface LoginAndPassword {
   login: string;
