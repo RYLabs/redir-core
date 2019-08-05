@@ -28,7 +28,7 @@ test("Simple Test with Prerequisite", () => {
   const prereq = new Prerequisite(lowercase);
 
   const input = new StringIO("Carl");
-  const script = new Script("testScript", [new Prerequisite(lowercase)], scriptContent, {});
+  const script = new Script("testScript", [prereq], scriptContent, {});
   return redir.runScript(script, input.promise()).then(output => {
     expect(output.toString()).toBe("Hello carl");
   });

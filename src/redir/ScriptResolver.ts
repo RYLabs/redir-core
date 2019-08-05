@@ -1,4 +1,4 @@
-import { ScriptRef } from "./ScriptRef";
+import { ScriptRef } from "./types";
 
 export interface ScriptResolver {
   resolve(name: string): Promise<ScriptRef>;

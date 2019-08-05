@@ -1,47 +1,11 @@
-import { PipelineBuilder } from "./PipelineBuilder";
-import { Pipeline } from "./Pipeline";
-import { Input, Output, Context } from "./types";
+import { Pipeline } from "./pipeline/Pipeline";
+import { PipelineBuilder } from "./pipeline/builder/PipelineBuilder";
+import { Prerequisite } from "./Prerequisite";
 import { Redir } from "./Redir";
-import { ScriptRef } from "./ScriptRef";
+import { ScriptRef } from "./types";
 
-export type ScriptOptions = { [key: string]: any };
-
-export class Prerequisite {
-  scriptRef: ScriptRef;
-  resultTarget?: ResultTarget;
-
-  constructor(ref: ScriptRef, resultTarget?: ResultTarget) {
-    this.scriptRef = ref;
-    this.resultTarget = resultTarget;
-  }
-}
-
-export enum ResultTargetType {
-  Context,
-  Output,
-}
-
-export class ResultTarget {
-  type: ResultTargetType = ResultTargetType.Output;
-  name: string;
-
-  constructor(name: string, type?: ResultTargetType) {
-    this.name = name;
-    this.type = type || ResultTargetType.Output;
-  }
-
-  store(result: Output, output: any, context: Context) {
-    if (this.type == ResultTargetType.Context) {
-      //debug(
-      //  `Storing results of ${
-      //    task.name
-      //  } in context as ${task.resultContextName}`
-      //);
-      context[this.name] = result;
-    } else {
-      output[this.name] = result;
-    }
-  }
+export interface ScriptOptions {
+  [key: string]: any;
 }
 
 export class Script implements ScriptRef {

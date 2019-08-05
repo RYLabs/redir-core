@@ -1,11 +1,12 @@
+export * from "./redir/io";
+export * from "./redir/types";
 export * from "./redir/Redir";
 export * from "./redir/Script";
-export * from "./redir/types";
-export * from "./redir/io";
+export * from "./redir/Prerequisite";
 
-import fetch from "./redir/result/fetch";
-import netrc from "./redir/context/netrc";
+// import fetch from "./redir/result/fetch";
+// import netrc from "./redir/context/netrc";
 
-//const redir = new Redir();
-//redir.resultProcessors.push(fetch);
-//redir.contextProcessors.push(netrc);
+// const redir = new Redir();
+// redir.resultProcessors.push(fetch);
+// redir.contextProcessors.push(netrc);

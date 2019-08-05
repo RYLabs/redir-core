@@ -1,8 +1,9 @@
 import * as vm from "vm";
-import { Script, ScriptOptions, ResultTarget } from "./Script";
-import { RedirFunction, Output, Input, Context, Runnable } from "./types";
+import { Context, Input, Output, RedirFunction, Runnable } from "./types";
+import { ObjectOutput, StringIO } from "./io";
 import { Redir } from "./Redir";
-import { StringIO, ObjectOutput } from "./io";
+import { ResultTarget } from "./ResultTarget";
+import { Script, ScriptOptions } from "./Script";
 
 export class ProcessUnit implements Runnable {
   name: string;
@@ -21,7 +22,7 @@ export class ProcessUnit implements Runnable {
   }
 
   run(input: Promise<Input>, context: Context): Promise<Output> {
-    let promise = this.runScriptInVM(input, context),
+    const promise = this.runScriptInVM(input, context),
       proc = this.resultProcessor;
     if (proc) {
       return promise.then(output => proc!(output.toInput(), context));
@@ -32,15 +33,15 @@ export class ProcessUnit implements Runnable {
 
   async runScriptInVM(input: Promise<Input>, context: Context): Promise<Output> {
     // debug("creating vm...");
-    const [vm, inputVal] = await Promise.all([this.createVM(context), input]);
+    const [vmInstance, inputVal] = await Promise.all([this.createVM(context), input]);
 
-    if (!("handle" in vm)) {
-      //debug("missing handle method!");
+    if (!("handle" in vmInstance)) {
+      // debug("missing handle method!");
       throw new Error("Expecting handle(input) method in script");
     }
 
     // debug("handling input:", inputVal);
-    const result = vm.handle(inputVal.toString());
+    const result = vmInstance.handle(inputVal.toString());
     if (typeof result === "string") {
       return new StringIO(result).promise();
     } else {

@@ -1,7 +1,7 @@
-import * as querystring from "querystring";
-import _fetch from "node-fetch";
+import _fetch from 'node-fetch';
+import * as querystring from 'querystring';
 
-type Request = { [key: string]: any };
+interface Request { [key: string]: any };
 
 export interface LoginAndPassword {
   login: string;
@@ -65,9 +65,9 @@ function doFetch(options: Request): Promise<string> {
   addHeader(request, "User-Agent", "redir.sh/fetcher <calvin@rylabs.io>");
 
   // debug("running fetch:", request);
-  const _url = request.url;
+  const newUrl = request.url;
   delete request.url;
-  return _fetch(_url, request).then(res => res.text());
+  return _fetch(newUrl, request).then(res => res.text());
 }
 
 export default function fetch(options: Request | [Request]): Promise<string | string[]> {

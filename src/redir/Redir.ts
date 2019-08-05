@@ -1,9 +1,9 @@
-import { Script, ScriptOptions } from "./Script";
-import { Output, Input, Context, RedirFunction } from "./types";
-import { ScriptResolver } from "./ScriptResolver";
-import { LocalFilesystemScriptResolver } from "./LocalFilesystemScriptResolver";
-import { emptyInput } from "./inputs";
+import { Context, Input, Output, RedirFunction } from "./types";
 import { DefaultContext } from "./DefaultContext";
+import { emptyInput } from "./inputs";
+import { LocalFilesystemScriptResolver } from "./LocalFilesystemScriptResolver";
+import { Script, ScriptOptions } from "./Script";
+import { ScriptResolver } from "./ScriptResolver";
 
 export type ContextProcessor = (context: Context, options: ScriptOptions) => void;
 
