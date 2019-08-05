@@ -1,7 +1,7 @@
-import { Pipeline } from '../Pipeline';
-import { Redir } from '../../Redir';
-import { Stage } from '../Stage';
-import { StageBuilder } from './StageBuilder';
+import { Pipeline } from "../Pipeline";
+import { Redir } from "../../Redir";
+import { Stage } from "../Stage";
+import { StageBuilder } from "./StageBuilder";
 
 export class PipelineBuilder {
   redir: Redir;

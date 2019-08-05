@@ -1,5 +1,5 @@
-import { Input, Output } from '../types';
-import { StringIO } from './StringIO';
+import { Input, Output } from "../types";
+import { StringIO } from "./StringIO";
 
 export class ObjectOutput implements Output {
   private value: any;

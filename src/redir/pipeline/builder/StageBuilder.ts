@@ -1,8 +1,8 @@
-import { PipelineBuilder } from './PipelineBuilder';
-import { ProcessUnit } from '../../ProcessUnit';
-import { ResultTarget } from '../../ResultTarget';
-import { Script } from '../../Script';
-import { Stage } from '../Stage';
+import { PipelineBuilder } from "./PipelineBuilder";
+import { ProcessUnit } from "../../ProcessUnit";
+import { ResultTarget } from "../../ResultTarget";
+import { Script } from "../../Script";
+import { Stage } from "../Stage";
 
 export class StageBuilder {
   pipeline: PipelineBuilder;
@@ -44,4 +44,3 @@ export class StageBuilder {
     return Promise.all(promises).then(() => this);
   }
 }
-
