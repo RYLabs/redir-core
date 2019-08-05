@@ -16,6 +16,14 @@ export class PipelineBuilder {
     return this.stage;
   }
 
+  nextStage(): StageBuilder {
+    const next = new StageBuilder(this);
+    this.stage.nextStage = next;
+    next.previousStage = this.stage;
+    this.stage = next;
+    return next;
+  }
+
   build(): Pipeline {
     const stages: Stage[] = [];
     let curStage = this.headStage;

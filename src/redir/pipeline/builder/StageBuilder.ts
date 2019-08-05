@@ -18,6 +18,12 @@ export class StageBuilder {
     return new Stage(this.processes);
   }
 
+  async addScriptName(scriptName: string, resultTarget?: ResultTarget): Promise<StageBuilder> {
+    const ref = await this.pipeline.redir.scriptResolver.resolve(scriptName);
+    const script = await ref.loadScript();
+    return this.addScript(script, resultTarget);
+  }
+
   addScript(script: Script, resultTarget?: ResultTarget): Promise<StageBuilder> {
     this.processes.push(new ProcessUnit(this.pipeline.redir, script, resultTarget));
 
