@@ -21,8 +21,8 @@ export class ProcessUnit implements Runnable {
   }
 
   run(input: Promise<Input>, context: Context): Promise<Output> {
-    const out = this.runScriptInVM(input, context);
-    return this.redir.resultProcessors.reduce((out, proc) => proc(out, context, this.options), out);
+    const initialOut = this.runScriptInVM(input, context);
+    return this.redir.resultProcessors.reduce((out, proc) => proc(out, context, this.options), initialOut);
   }
 
   async runScriptInVM(input: Promise<Input>, context: Context): Promise<Output> {
