@@ -16,7 +16,7 @@ export class FileScriptRef implements ScriptRef {
   }
   async loadScript(): Promise<Script> {
     const { data, content } = this.loadFile(),
-      {prerequisites} = data;
+      { prerequisites } = data;
     const prereqs = await this.loadPrerequisites(prerequisites || []);
     delete data.prerequisites;
     return new Script(this.name, prereqs, content, data);

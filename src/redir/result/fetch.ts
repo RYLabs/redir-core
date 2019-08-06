@@ -1,8 +1,8 @@
-import fetch from '../util/fetch';
-import Logger from 'nightingale-logger';
-import { Context, Output } from '../types';
-import { ScriptOptions } from '../Script';
-import { StringArrayIO, StringIO } from '../io';
+import fetch from "../util/fetch";
+import Logger from "nightingale-logger";
+import { Context, Output } from "../types";
+import { ScriptOptions } from "../Script";
+import { StringArrayIO, StringIO } from "../io";
 
 const logger = new Logger("redir:result:fetch");
 
