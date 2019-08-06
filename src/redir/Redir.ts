@@ -6,10 +6,11 @@ import { Script, ScriptOptions } from "./Script";
 import { ScriptResolver } from "./ScriptResolver";
 
 export type ContextProcessor = (context: Context, options: ScriptOptions) => void;
+export type ResultProcessor = (output: Promise<Output>, context: Context, options: ScriptOptions) => Promise<Output>;
 
 export class Redir {
   contextProcessors: ContextProcessor[] = [];
-  resultProcessor?: RedirFunction;
+  resultProcessors: ResultProcessor[] = [];
   scriptResolver: ScriptResolver = LocalFilesystemScriptResolver.defaultResolver();
 
   runScript(script: Script, input?: Promise<Input>): Promise<Output> {

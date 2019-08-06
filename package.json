@@ -35,6 +35,8 @@
     "@types/lodash": "^4.14.134",
     "@types/node-fetch": "^2.3.7",
     "gray-matter": "^4.0.2",
+    "lodash": "^4.17.15",
+    "nightingale-logger": "^6.2.2",
     "node-fetch": "^2.6.0"
   }
 }

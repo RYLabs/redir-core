@@ -1,5 +1,8 @@
 import _fetch from "node-fetch";
 import * as querystring from "querystring";
+import Logger from "nightingale-logger";
+
+const logger = new Logger("redir:util:fetch");
 
 interface Request {
   [key: string]: any;
@@ -66,7 +69,8 @@ function doFetch(options: Request): Promise<string> {
 
   addHeader(request, "User-Agent", "redir.sh/fetcher <calvin@rylabs.io>");
 
-  // debug("running fetch:", request);
+  logger.debug("running fetch:", request);
+
   const newUrl = request.url;
   delete request.url;
   return _fetch(newUrl, request).then(res => res.text());
