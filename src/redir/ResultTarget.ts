@@ -1,8 +1,11 @@
+import Logger from "nightingale-logger";
 import { Context, Output } from "./types";
 
+const logger = new Logger("redir:ResultTarget");
+
 export enum ResultTargetType {
-  Context,
   Output,
+  Context,
 }
 
 export class ResultTarget {
@@ -11,16 +14,12 @@ export class ResultTarget {
 
   constructor(name: string, type?: ResultTargetType) {
     this.name = name;
-    this.type = type || ResultTargetType.Output;
+    this.type = type || ResultTargetType.Context;
   }
 
   store(result: Output, output: any, context: Context) {
     if (this.type === ResultTargetType.Context) {
-      // debug(
-      //   `Storing results of ${
-      //     task.name
-      //   } in context as ${task.resultContextName}`
-      // );
+      logger.debug(`Storing results as ${this.name} in context`);
       context[this.name] = result;
     } else {
       output[this.name] = result;

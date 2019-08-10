@@ -4,6 +4,9 @@ import { ObjectOutput, StringIO } from "./io";
 import { Redir, ResultProcessor } from "./Redir";
 import { ResultTarget } from "./ResultTarget";
 import { Script, ScriptOptions } from "./Script";
+import Logger from "nightingale-logger";
+
+const logger = new Logger("redir:ProcessUnit");
 
 export class ProcessUnit implements Runnable {
   name: string;
@@ -26,15 +29,15 @@ export class ProcessUnit implements Runnable {
   }
 
   async runScriptInVM(input: Promise<Input>, context: Context): Promise<Output> {
-    // debug("creating vm...");
+    logger.debug("creating vm...");
     const [vmInstance, inputVal] = await Promise.all([this.createVM(context), input]);
 
     if (!("handle" in vmInstance)) {
-      // debug("missing handle method!");
+      logger.debug("missing handle method!");
       throw new Error("Expecting handle(input) method in script");
     }
 
-    // debug("handling input:", inputVal);
+    logger.debug("handling input:", inputVal);
     const result = vmInstance.handle(inputVal.toString());
     if (typeof result === "string") {
       return new StringIO(result).promise();
@@ -50,7 +53,7 @@ export class ProcessUnit implements Runnable {
     const vmContext = vm.createContext(sandbox);
     vm.runInContext(this.scriptContent, vmContext);
 
-    // debug("sandbox keys:", Object.keys(sandbox));
+    logger.debug("sandbox keys:", Object.keys(sandbox));
 
     return vmContext;
   }
