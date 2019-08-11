@@ -9,12 +9,12 @@ export enum ResultTargetType {
 }
 
 export class ResultTarget {
-  type: ResultTargetType = ResultTargetType.Output;
+  type = ResultTargetType.Output;
   name: string;
 
   constructor(name: string, type?: ResultTargetType) {
     this.name = name;
-    this.type = type || ResultTargetType.Context;
+    this.type = type || ResultTargetType.Output;
   }
 
   store(result: Output, output: any, context: Context) {
